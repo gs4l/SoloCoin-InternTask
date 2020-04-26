@@ -3,4 +3,5 @@
     <string name="api_key">AIzaSyDluSj9i2qQsRLB3wxH2kXZlPj4R2KUJBU</string>
     <string name="current_location">Home Location </string>
     <string name="submit">Submit</string>
+    <string name="wallet_text">Wallet Balance: </string>
 </resources>

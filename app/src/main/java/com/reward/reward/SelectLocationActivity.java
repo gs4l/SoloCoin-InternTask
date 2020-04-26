@@ -2,6 +2,7 @@ package com.reward.reward;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,12 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+import com.reward.reward.utils.SharedPrefs;
 
 
 public class SelectLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -51,12 +48,16 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
     private boolean locationPermission;
     private Integer PERMISSION_ACCESS_FINE_LOCATION = 1;
 
+    private SharedPrefs mPrefs;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_select_location);
         submitButton = findViewById(R.id.submit_button);
+
+        mPrefs = new SharedPrefs(this);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.maps_fragment);
@@ -79,6 +80,7 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void updateLocationUI(){
         if (mMap == null){
             return;
@@ -113,10 +115,10 @@ public class SelectLocationActivity extends AppCompatActivity implements OnMapRe
                                 mMap.addMarker(new MarkerOptions().position(latLng));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         latLng, DEFAULT_ZOOM));
-
+                                mPrefs.setLat((float)latLng.latitude);
+                                mPrefs.setLong((float)latLng.longitude);
                             }
                         } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
                         }
                     }
