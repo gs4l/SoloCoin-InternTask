@@ -20,6 +20,8 @@ public class TimerService extends Service {
 
     private long timeInMillisecond = 600000; // 10 mins
 
+    private Context context;
+
     private SharedPrefs mPrefs;
 
     private GeofenceBroadcastReciever mReciever;
@@ -28,6 +30,8 @@ public class TimerService extends Service {
     public void onCreate() {
         super.onCreate();
         mPrefs = new SharedPrefs(this);
+
+        context = this;
 
         mReciever = new GeofenceBroadcastReciever(){
             @Override
@@ -78,7 +82,10 @@ public class TimerService extends Service {
         CountDownTimer timer = new CountDownTimer(timeInMillisecond, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
+                Intent local = new Intent();
+                local.setAction("service.to.activity.transfer");
+                local.putExtra("time.in.millisecond", timeInMillisecond);
+                context.sendBroadcast(local);
 
             }
 
@@ -102,4 +109,6 @@ public class TimerService extends Service {
         }
 
     }
+
+    //TODO CREATE THE GEOFENCE OBJECT IN MAINACTIVITY AND LAUNCH THE SERVICE FROM TIMER ACTIVITY....CREATE ONCLICKLISTENER FOR THE SUBMIT BUTTON
 }

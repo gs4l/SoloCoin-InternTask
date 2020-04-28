@@ -42,7 +42,11 @@ public class SharedPrefs {
     }
 
     public void setWalletBalance(int value){
-        setIntPreference("Balance", value);
+        if (value <= 0) {
+            setIntPreference("Balance", 0);
+        }else {
+            setIntPreference("Balance", value);
+        }
     }
 
     public double getLat(){
